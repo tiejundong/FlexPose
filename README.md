@@ -124,7 +124,7 @@ and set (`--pretrain_protein_encoder`, `--pretrain_ligand_encoder`) to the path 
 We freeze pre-trained parameters by default to improve training efficiency.
 
 
-### Structure visualization <a name="structure-visualization"></a>
+## Structure visualization <a name="structure-visualization"></a>
 ![Fig_conf](img/conf_for_demo.png)
 
 You can visualize model confidence with PyMol:
@@ -132,10 +132,10 @@ You can visualize model confidence with PyMol:
 spectrum b, red_white_green, minimum=0, maximum=1
 ```
 
-### License <a name="license"></a>
+## License <a name="license"></a>
 Released under the MIT license.
 
-### Citation <a name="citation"></a>
+## Citation <a name="citation"></a>
 If you find the models useful in your research, we ask that you cite the relevant paper:
 
 (under review)
