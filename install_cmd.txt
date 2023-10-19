@@ -1,0 +1,31 @@
+# Installation of FlexPose (tested on Aug 15, 2023)
+
+# activate environment
+conda create -n FlexPose python=3.8
+conda activate FlexPose
+
+# pyrosetta
+# username/password are provided with when you obtained a Rosetta license
+conda install -c https://username:password@conda.graylab.jhu.edu pyrosetta
+
+# rdkit
+conda install -c conda-forge rdkit
+
+# torch
+pip install torch==1.10.2+cu113 -f https://download.pytorch.org/whl/torch_stable.html
+
+# torch_geometric
+pip install torch_scatter==2.0.9 torch_sparse==0.6.13 torch_cluster==1.6.0 torch_spline_conv==1.2.1 -f https://data.pyg.org/whl/torch-1.10.2+cu113.html
+pip install torch-geometric==2.0.4
+
+# modeller
+conda install modeller -c salilab
+# replace XXXX with your Modeller license key
+
+# other
+conda install scipy tqdm seaborn pandas ipykernel
+pip install jupyterlab tensorboard ray einops keras_progbar biopandas chardet
+
+
+
+

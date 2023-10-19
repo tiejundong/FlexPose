@@ -1,0 +1,5 @@
+﻿protein,ligand,ref_pocket_center
+./FlexPose/example/3g0g/3g0g_protein.pdb,./FlexPose/example/3g0g/3g0g_ligand.mol2,./FlexPose/example/3g0g/3g0g_ligand.mol2
+./FlexPose/example/4r6e/4r6e_protein.pdb,./FlexPose/example/4r6e/4r6e_ligand.mol2,./FlexPose/example/4r6e/4r6e_ligand.mol2
+./FlexPose/example/5ei6/5ei6_protein.pdb,./FlexPose/example/5ei6/5ei6_ligand.mol2,./FlexPose/example/5ei6/5ei6_ligand.mol2
+./FlexPose/example/6ew7/6ew7_apo_added.pdb,./FlexPose/example/6ew7/6ew7_ligand.mol2,./FlexPose/example/6ew7/6ew7_ligand.mol2
