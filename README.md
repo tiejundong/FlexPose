@@ -136,7 +136,7 @@ spectrum b, red_white_green, minimum=0, maximum=1
 Released under the MIT license.
 
 ## Citation <a name="citation"></a>
-If you find the models useful in your research, we ask that you cite the relevant paper:
+If you find our models useful in your research, please cite the relevant paper:
 
 (under review)
 
