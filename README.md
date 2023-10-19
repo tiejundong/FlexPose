@@ -12,7 +12,7 @@ Implementation of FlexPose, a framework for AI-based flexible modeling of protei
     - [Data augmentation](#data-aug)
     - [Data preprocessing](#data-preprocessing)
     - [Train your own model](#train-your-own-model)
-  - [Structure visualization](#structure-visualization)
+  - [Model confidence visualization](#model-confidence-visualization)
 - [License](#license)
 - [Citation](#citation)
 </details>
@@ -124,7 +124,7 @@ and set (`--pretrain_protein_encoder`, `--pretrain_ligand_encoder`) to the path 
 We freeze pre-trained parameters by default to improve training efficiency.
 
 
-## Structure visualization <a name="structure-visualization"></a>
+## Model confidence visualization <a name="model-confidence-visualization"></a>
 ![Fig_conf](img/conf_for_demo.png)
 
 You can visualize model confidence with PyMol:
