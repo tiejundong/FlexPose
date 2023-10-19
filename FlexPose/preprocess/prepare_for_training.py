@@ -256,7 +256,7 @@ def prepare(tup_in):
 
 
     try:
-        from model.MMFF_full import get_MMFF_param
+        from model.MMFF import get_MMFF_param
         dic_MMFF_param = get_MMFF_param(ligand_mol)
     except:
         dic_MMFF_param = None
