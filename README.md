@@ -1,6 +1,6 @@
 # FlexPose
 
-Implementation of FlexPose, a framework for flexible modeling of protein-ligand binding pose with deep learning.
+Implementation of FlexPose, a framework for AI-based flexible modeling of protein-ligand binding pose.
 
 
 <details open><summary><b>Table of contents</b></summary>
