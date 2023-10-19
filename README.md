@@ -47,6 +47,7 @@ predict_by_FlexPose(
     output_result_path='./output.csv',                                # record output
 )
 ```
+Additionaly, set `model_conf = True` and `ens = 10` to get predicted model confidence.
 
 
 ### Training <a name="training"></a>
