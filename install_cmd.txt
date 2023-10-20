@@ -1,4 +1,4 @@
-# Installation prerequisite packages (tested on Aug 15, 2023)
+# Install prerequisite packages (tested on Aug 15, 2023)
 
 # activate environment
 conda create -n FlexPose python=3.8
