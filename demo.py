@@ -9,8 +9,6 @@ predict_by_FlexPose(
     device='cuda:0',                                                  # device
     structure_output_path='./structure_output',                       # structure output
     output_result_path='./output.csv',                                # record output
-
-    param_path='/root/autodl-tmp/demo_test/code/test/',
 )
 
 
