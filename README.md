@@ -1,7 +1,7 @@
 # FlexPose
 
 Implementation of FlexPose, a framework for AI-based flexible modeling of protein-ligand binding pose.
-
+![Fig1_b](img/Fig1_b.png)
 
 <details open><summary><b>Table of contents</b></summary>
 
@@ -139,7 +139,7 @@ Released under the MIT license.
 ## Citation <a name="citation"></a>
 If you find our models useful in your research, please cite the relevant paper:
 
-(under review)
+https://doi.org/10.1021/acs.jctc.3c00273
 
 
 
