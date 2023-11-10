@@ -1,6 +1,8 @@
 # FlexPose
 
-Implementation of FlexPose, a framework for AI-based flexible modeling of protein-ligand binding pose.
+Implementation of [FlexPose](https://pubs.acs.org/doi/10.1021/acs.jctc.3c00273), 
+a framework for AI-based flexible modeling of protein-ligand binding pose.
+
 ![Fig1_b](img/Fig1_b.png)
 
 <details open><summary><b>Table of contents</b></summary>
