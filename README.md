@@ -2,9 +2,9 @@
 
 ### [FlexPose](https://pubs.acs.org/doi/10.1021/acs.jctc.3c00273), a framework for AI-based flexible modeling of protein-ligand binding pose.
 
-***A free light-weight web server can be found [here](https://www.knightofnight.com/sl/FlexPose).***
-
 ![Fig1_b](img/Fig1_b.png)
+
+***A free light-weight web server can be found [here](https://www.knightofnight.com/sl/FlexPose).***
 
 <details open><summary><b>Table of contents</b></summary>
 
