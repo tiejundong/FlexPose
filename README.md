@@ -141,8 +141,15 @@ Released under the MIT license.
 
 ## Citation <a name="citation"></a>
 If you find our models useful in your research, please cite the relevant paper:
-
-https://doi.org/10.1021/acs.jctc.3c00273
+```
+@article{dong2023equivariant,
+  title={Equivariant Flexible Modeling of the Protein--Ligand Binding Pose with Geometric Deep Learning},
+  author={Dong, Tiejun and Yang, Ziduo and Zhou, Jun and Chen, Calvin Yu-Chian},
+  journal={Journal of Chemical Theory and Computation},
+  year={2023},
+  publisher={ACS Publications}
+}
+```
 
 
 
