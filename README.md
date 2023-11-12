@@ -140,7 +140,7 @@ spectrum b, red_white_green, minimum=0, maximum=1
 Released under the MIT license.
 
 ## Citation <a name="citation"></a>
-If you find our models useful in your research, please cite the relevant paper:
+If you find our model useful in your research, please cite the relevant paper:
 ```
 @article{dong2023equivariant,
   title={Equivariant Flexible Modeling of the Protein--Ligand Binding Pose with Geometric Deep Learning},
