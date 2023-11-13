@@ -1,15 +1,11 @@
 import os
 import sys
-
-import random
-
 sys.path.append('/'.join(os.path.abspath(__file__).split('/')[:-1]))
 
 import numpy as np
 import torch
 import torch.nn.functional as F
-import torch_geometric
-from torch_scatter import scatter_min, scatter_mean, scatter_add
+from torch_scatter import scatter_mean, scatter_add
 from einops import rearrange, repeat
 from rdkit import Chem
 from rdkit.Chem import AllChem
