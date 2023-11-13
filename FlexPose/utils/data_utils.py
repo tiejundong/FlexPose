@@ -4,6 +4,8 @@ from rdkit.Chem import AllChem
 
 import torch
 import torch.nn.functional as F
+import torch_geometric
+from model.MMFF import MMFF_keys, MMFF_pad_dim
 
 
 def pad_zeros(batch_list, keys, max_len, collect_dim=-3, data_type='1d', cat=False, value=0, output_dtype=None):
@@ -82,7 +84,4 @@ def tan_2_deg(sin_pred, cos_pred):
         deg_pred = deg_pred + np.pi if deg_pred < 0 else deg_pred - np.pi
         assert np.sin(deg_pred) * sin_pred > 0 and np.cos(deg_pred) * cos_pred > 0
         return deg_pred
-
-
-
 

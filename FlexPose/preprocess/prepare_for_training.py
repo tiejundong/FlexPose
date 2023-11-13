@@ -15,6 +15,7 @@ from rdkit import RDLogger
 RDLogger.DisableLog('rdApp.*')
 
 from FlexPose.utils.pdbbind_preprocess import *
+from model.MMFF import get_MMFF_param
 
 
 
@@ -256,7 +257,6 @@ def prepare(tup_in):
 
 
     try:
-        from model.MMFF import get_MMFF_param
         dic_MMFF_param = get_MMFF_param(ligand_mol)
     except:
         dic_MMFF_param = None

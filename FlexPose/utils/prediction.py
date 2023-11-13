@@ -28,7 +28,7 @@ from preprocess.prepare_for_training import try_prepare_task
 from utils.APOPDBbind_data import pred_ens
 from utils.pdbbind_preprocess import *
 from utils.data_utils import *
-from model.MMFF import MMFF_keys, MMFF_pad_dim
+from model.MMFF import MMFF_keys, MMFF_pad_dim, get_MMFF_param
 if is_notebook():
     from tqdm.notebook import tqdm, trange
 else:
@@ -92,7 +92,6 @@ def prepare_single_input(tupin):
         ff.Minimize(maxIts=20)
 
     try:
-        from model.MMFF import get_MMFF_param
         dic_MMFF_param = get_MMFF_param(ligand_template)
     except:
         dic_MMFF_param = None
@@ -673,13 +672,13 @@ def predict(
         batch_csv=None,
         model_conf=False,
         device='cuda:0',
-        ens=1,
+        ens=1,  # ensemble number
         seed=42,
         batch_size=12,
         num_workers=4,
         prepare_data_with_multi_cpu=True,
-        min=False,
-        rdkit_min=True,
+        min=True,  # torch build-in minimization
+        rdkit_min=False,  # rdkit minimization
         env_min=False,
         cache_path='./cache',
         output_structure=True,
