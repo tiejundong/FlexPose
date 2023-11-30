@@ -51,22 +51,22 @@ predict_by_FlexPose(
 )
 ```
 
-|Arguments | Description |
-|----------|--------|
-| `protein` | input proteins (a list of paths) |
-| `ligand`  | input ligands (a list of paths) |
-| `ref_pocket_center` | ligand-like files for pocket selection (a list of paths) |
-| `batch_csv` | batch prediction |
-| `ens` | ensemble number |
-| `structure_output_path` | a folder for saving predicted structures |
-| `output_result_path` | a csv file for saving records |
-| `min` | energy minimizion |
-| `min_loop` | energy minimizion loops |
-| `min_constraint` | constraint energy minimizion constant (kcal/mol/Å^2) |
-| `batch_csv` | batch prediction |
-| `device` | device |
-| `batch_size` | batch size |
-| `prepare_data_with_multi_cpu` | prepare inputs with multiprocessing |
+|Arguments | Description                                              |
+|----------|----------------------------------------------------------|
+| `protein` | Input proteins (a list of paths)                         |
+| `ligand`  | Input ligands (a list of paths)                          |
+| `ref_pocket_center` | Ligand-like files for pocket selection (a list of paths) |
+| `batch_csv` | Batch prediction                                         |
+| `ens` | Ensemble number                                          |
+| `structure_output_path` | A folder for saving predicted structures                 |
+| `output_result_path` | A csv file for saving records                            |
+| `min` | Energy minimizion                                        |
+| `min_loop` | Energy minimizion loops                                  |
+| `min_constraint` | Constraint energy minimizion constant (kcal/mol/Å^2)     |
+| `batch_csv` | Batch prediction                                         |
+| `device` | Device                                                   |
+| `batch_size` | Batch size                                               |
+| `prepare_data_with_multi_cpu` | Prepare inputs with multiprocessing                      |
 
 
 
