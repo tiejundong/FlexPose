@@ -22,13 +22,13 @@ opts = '-mute true -ignore_unrecognized_res true'
 pyrosetta.distributed.init(opts)
 
 
-from model.layers import FlexPose
-from utils.common import *
-from preprocess.prepare_for_training import try_prepare_task
-from utils.APOPDBbind_data import pred_ens
-from utils.pdbbind_preprocess import *
-from utils.data_utils import *
-from model.MMFF import MMFF_keys, MMFF_pad_dim, get_MMFF_param
+from FlexPose.model.layers import FlexPose
+from FlexPose.utils.common import *
+from FlexPose.preprocess.prepare_for_training import try_prepare_task
+from FlexPose.utils.APOPDBbind_data import pred_ens
+from FlexPose.utils.pdbbind_preprocess import *
+from FlexPose.utils.data_utils import *
+from FlexPose.model.MMFF import MMFF_keys, MMFF_pad_dim, get_MMFF_param
 if is_notebook():
     from tqdm.notebook import tqdm, trange
 else:
@@ -665,18 +665,18 @@ def save_struct(
 
 @torch.no_grad()
 def predict(
-        param_path=None,
-        protein=None,
-        ligand=None,
-        ref_pocket_center=None,
-        batch_csv=None,
-        model_conf=False,
+        param_path=None,  # model parameter path
+        protein=None,  # protein path
+        ligand=None,  # ligand path
+        ref_pocket_center=None,  # ligand-like file path
+        batch_csv=None,  # batch prediction
+        model_conf=False,  # predict model confidence
         device='cuda:0',
         ens=1,  # ensemble number
         seed=42,
-        batch_size=12,
-        num_workers=4,
-        prepare_data_with_multi_cpu=True,
+        batch_size=12,  # only work with ens=1
+        num_workers=4,  # only work with ens=1
+        prepare_data_with_multi_cpu=True,  # prepare inputs with multi-processing
         min=True,  # torch build-in minimization
         rdkit_min=False,  # rdkit minimization
         env_min=False,
@@ -687,8 +687,8 @@ def predict(
         structure_output_path='./structure_output',
         output_result_path=None,
         calc_rmsd=False,
-        min_loop=100,
-        min_constraint=5,
+        min_loop=100,  # minimization loop
+        min_constraint=5,  # minimization constraint factor
 ):
     print('='*20, 'Running FlexPose', '='*20)
 

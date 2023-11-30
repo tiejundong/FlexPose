@@ -10,8 +10,7 @@ from einops import rearrange, repeat
 from rdkit import Chem
 from rdkit.Chem import AllChem
 
-
-from model.MMFF_supply import dic_atom2lin
+from FlexPose.model.MMFF_supply import dic_atom2lin
 
 
 MMFF_keys = ['BS', 'AB', 'SB', 'OOP', 'TOR', 'VDW', 'ELE']

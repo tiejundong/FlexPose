@@ -35,12 +35,6 @@ def split_dataset(data_path, data_split_rate, test_list_path=None):
     return train_list, val_list, test_list
 
 
-def get_aff(info_path):
-    dic_aff = {line[:4]: float(line[18:23])
-               for line in open(info_path, 'r').readlines() if not line.startswith('#')}
-    return dic_aff
-
-
 def collate_fn(batch_list, return_batch_list=False):
     max_len_pocket = 0
     max_len_ligand = 0
@@ -523,7 +517,9 @@ class ComplexDataset(torch.utils.data.Dataset):
         # CA CB N C and SC
         MCCACB_coor = torch.cat([p_coor_init.unsqueeze(-2), CB_coor.unsqueeze(-2), MCSC_coor[:, :2, :]], dim=1)
         SC_fromtor_vec = p_x_vec_init  # CB-CA, CG-CB, ...
-        SC_fromCA_vec = torch.where(MCSC_coor[:, 3:] == 0, 0 * MCSC_coor[:, 3:], MCSC_coor[:, 3:] - p_coor_init.unsqueeze(-2))
+        SC_fromCA_vec = torch.where(
+            MCSC_coor[:, 3:] == 0, torch.zeros_like(MCSC_coor[:, 3:]), MCSC_coor[:, 3:] - p_coor_init.unsqueeze(-2)
+        )
 
         # x vec
         x_MCCACB_vec = rearrange(MCCACB_coor, 'i t c -> i t () c') - rearrange(MCCACB_coor, 'i t c -> i () t c')

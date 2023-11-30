@@ -15,7 +15,7 @@ from rdkit import RDLogger
 RDLogger.DisableLog('rdApp.*')
 
 from FlexPose.utils.pdbbind_preprocess import *
-from model.MMFF import get_MMFF_param
+from FlexPose.model.MMFF import get_MMFF_param
 
 
 

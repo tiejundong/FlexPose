@@ -46,7 +46,7 @@ class CoorMin(torch.nn.Module):
             e = self.MMFF_lossfunction(coor_paramed, complex_graph, return_sum=True)
             e = e.sum()
             if constraint > 0:
-                e_constraint = ((coor_paramed - coor_pred_detach) ** 2 * constraint).sum()
+                e_constraint = 0.5 * ((coor_paramed - coor_pred_detach) ** 2 * constraint).sum()
                 e = e + e_constraint
             optimizer.zero_grad()
             e.backward()

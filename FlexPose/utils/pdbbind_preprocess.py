@@ -36,6 +36,7 @@ def read_mol_from_pdbbind(data_path, pdb_id):
         ligand_mol = read_mol_with_pdb_smi(ligand_pdbpath, ligand_smiles)
     return ligand_mol
 
+
 def get_true_posi(mol):
     mol_conf = mol.GetConformer()
     node_posi = np.array([mol_conf.GetAtomPosition(int(idx)) for idx in range(mol.GetNumAtoms())])

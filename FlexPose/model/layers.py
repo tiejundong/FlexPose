@@ -61,8 +61,51 @@ class PocketEncoder(torch.nn.Module):
         return complex_graph
 
 
-class LigandFeatEncoder(torch.nn.Module):
+class ProteinPretrain(torch.nn.Module):
     def __init__(self, args):
+        super(ProteinPretrain, self).__init__()
+        self.p_encoder = PocketEncoder(args)
+
+        # for pretrain
+        self.AAtype_predict = torch.nn.Sequential(
+            torch.nn.Linear(args.p_x_sca_hidden + args.p_x_vec_hidden, args.p_x_sca_hidden + args.p_x_vec_hidden),
+            torch.nn.LeakyReLU(),
+            torch.nn.Linear(args.p_x_sca_hidden + args.p_x_vec_hidden, 20))
+        self.MCcoor_predict = torch.nn.Sequential(
+            GVP(args.p_x_sca_hidden, args.p_x_vec_hidden, args.p_x_sca_hidden, args.p_x_vec_hidden),
+            GVL(args.p_x_sca_hidden, args.p_x_vec_hidden, args.p_x_sca_hidden, 6))
+        self.SCcoor_predict = torch.nn.Sequential(
+            GVP(args.p_x_sca_hidden, args.p_x_vec_hidden, args.p_x_sca_hidden, args.p_x_vec_hidden),
+            GVL(args.p_x_sca_hidden, args.p_x_vec_hidden, args.p_x_sca_hidden, 8))
+        self.CAnoise_predict = torch.nn.Sequential(
+            GVP(args.p_x_sca_hidden, args.p_x_vec_hidden, args.p_x_sca_hidden, args.p_x_vec_hidden),
+            GVL(args.p_x_sca_hidden, args.p_x_vec_hidden, args.p_x_sca_hidden, 1))
+
+    def forward(self, complex_graph):
+        complex_graph = self.p_encoder(complex_graph)
+
+        # for pretrain
+        tmp_x_sca = rearrange(complex_graph.p_x_sca, 'b n d -> (b n) d')
+        tmp_x_vec = rearrange(complex_graph.p_x_vec, 'b n d c-> (b n) d c')
+        tmp_x_sca_add_normed_vec = rearrange(
+            torch.cat([complex_graph.p_x_sca, complex_graph.p_x_vec.norm(p=2, dim=-1)], dim=-1), 'b n d -> (b n) d')
+
+        AAtype_pred = self.AAtype_predict(
+            tmp_x_sca_add_normed_vec[complex_graph.p_x_mask_AAtype_bool])
+        MCcoor_pred = self.MCcoor_predict(
+            (tmp_x_sca[complex_graph.p_x_mask_MCcoor_bool], tmp_x_vec[complex_graph.p_x_mask_MCcoor_bool]))[1]
+        SCcoor_pred = self.SCcoor_predict(
+            (tmp_x_sca[complex_graph.p_x_mask_SCcoor_bool], tmp_x_vec[complex_graph.p_x_mask_SCcoor_bool]))[1]
+        CAnoise_pred = self.CAnoise_predict(
+            (tmp_x_sca[complex_graph.p_x_mask_CAnoise_bool],
+             tmp_x_vec[complex_graph.p_x_mask_CAnoise_bool])
+        )[1].squeeze(-2) + complex_graph.p_x_mask_CAnoise_CAcoor
+
+        return (AAtype_pred, MCcoor_pred, SCcoor_pred, CAnoise_pred)
+
+
+class LigandFeatEncoder(torch.nn.Module):
+    def __init__(self, args, pretrain=False):
         super(LigandFeatEncoder, self).__init__()
         self.l_x_sca_embed = make_embed(args.l_x_sca_indim + 1, args.l_x_sca_hidden)
         self.l_edge_sca_embed = make_embed(args.l_edge_sca_indim + 1, args.l_edge_sca_hidden)
@@ -74,17 +117,126 @@ class LigandFeatEncoder(torch.nn.Module):
             args.l_x_sca_hidden//args.n_head,
             args.dropout,
             full_gate=True,
-            return_graph_pool=False
+            return_graph_pool=True if pretrain else False,
         )
+        self.pretrain = pretrain
 
     def forward(self, complex_graph):
         complex_graph.l_x_sca = self.l_x_sca_embed(complex_graph.l_x_sca_init)
         complex_graph.l_edge_sca = self.l_edge_sca_embed(complex_graph.l_edge_sca_init)
 
-        complex_graph.l_x_sca, complex_graph.l_edge_sca = self.GTlayers(
-            complex_graph.l_x_sca, complex_graph.l_edge_sca, complex_graph.l_x_mask, complex_graph.l_edge_mask)
+        if self.pretrain:
+            complex_graph.l_x_sca, complex_graph.l_edge_sca, complex_graph.l_graph_pool = self.GTlayers(
+                complex_graph.l_x_sca, complex_graph.l_edge_sca, complex_graph.l_x_mask, complex_graph.l_edge_mask)
+        else:
+            complex_graph.l_x_sca, complex_graph.l_edge_sca = self.GTlayers(
+                complex_graph.l_x_sca, complex_graph.l_edge_sca, complex_graph.l_x_mask, complex_graph.l_edge_mask)
 
         return complex_graph
+
+
+class LigandPretrain(torch.nn.Module):
+    def __init__(self, args):
+        super(LigandPretrain, self).__init__()
+        self.l_feat_encoder = LigandFeatEncoder(args, pretrain=True)
+        self.l_x_vec_embed = VecExpansion(args.l_x_vec_indim, args.l_x_vec_hidden)
+        self.l_edge_vec_embed = VecExpansion(args.l_edge_vec_indim, args.l_edge_vec_hidden)
+        self.l_coor_encoder = GVMessage(
+            args.l_x_sca_hidden,
+            args.l_x_vec_hidden,
+            args.l_edge_sca_hidden,
+            args.l_edge_vec_hidden,
+            args.n_head,
+            args.dropout,
+            add_coor=True,
+            update_edge=False,
+        )
+
+        # for masking
+        self.l_x_pretrain = torch.nn.Sequential(
+            torch.nn.Linear(args.l_x_sca_hidden, args.l_x_sca_hidden),
+            torch.nn.LeakyReLU(),
+            torch.nn.Linear(args.l_x_sca_hidden, 10))
+        self.l_edge_pretrain = torch.nn.Sequential(
+            torch.nn.Linear(args.l_edge_sca_hidden, args.l_edge_sca_hidden),
+            torch.nn.LeakyReLU(),
+            torch.nn.Linear(args.l_edge_sca_hidden, 6))
+        self.l_graph_x_pretrain = torch.nn.Sequential(  # graph level train, with x
+            torch.nn.Linear(args.l_x_sca_hidden * 2 + args.l_edge_sca_hidden,
+                            args.l_x_sca_hidden * 2 + args.l_edge_sca_hidden),
+            torch.nn.LeakyReLU(),
+            torch.nn.Linear(args.l_x_sca_hidden * 2 + args.l_edge_sca_hidden, 1))
+        self.l_graph_edge_pretrain = torch.nn.Sequential(  # graph level train, with edge
+            torch.nn.Linear(args.l_x_sca_hidden + args.l_edge_sca_hidden * 2,
+                            args.l_x_sca_hidden + args.l_edge_sca_hidden * 2),
+            torch.nn.LeakyReLU(),
+            torch.nn.Linear(args.l_x_sca_hidden + args.l_edge_sca_hidden * 2, 1))
+        self.dismap_predict = torch.nn.Sequential(
+            torch.nn.Linear(args.l_edge_sca_hidden, args.l_edge_sca_hidden),
+            torch.nn.LeakyReLU(),
+            torch.nn.Linear(args.l_edge_sca_hidden, 1))
+        self.noise_predict = GVL(args.l_x_sca_hidden, args.l_x_vec_hidden, args.l_x_sca_hidden, 1)
+
+    def forward(self, complex_graph):
+        complex_graph = self.l_feat_encoder(complex_graph)
+
+        # for masking
+        l_x_masked = rearrange(complex_graph.l_x_sca, 'b n d -> (b n) d')[complex_graph.l_x_mask_bool.reshape(-1)]
+        l_edge_masked = rearrange(
+            complex_graph.l_edge_sca, 'b i j d -> (b i j) d'
+        )[complex_graph.l_edge_mask_bool.reshape(-1)]
+        l_x_pred = self.l_x_pretrain(l_x_masked)
+        l_edge_pred = self.l_edge_pretrain(l_edge_masked)
+
+        # for graph
+        l_x_sca = complex_graph.l_x_sca
+        shift_l_x_sca = torch.cat([l_x_sca[1:], l_x_sca[[0]]], dim=0)
+        edge_shift_index = repeat(
+            complex_graph.edge_shift_index, 'b i -> b i j d',
+            j=complex_graph.l_edge_sca.size(-2), d=complex_graph.l_edge_sca.size(-1)
+        )
+        l_edge_sca = torch.gather(complex_graph.l_edge_sca, index=edge_shift_index, dim=1).squeeze(1)
+        shift_l_edge_sca = torch.cat([l_edge_sca[1:], l_edge_sca[[0]]], dim=0)
+        complex_graph.shift_x_mask = torch.cat([complex_graph.l_x_mask[1:], complex_graph.l_x_mask[[0]]], dim=0)
+
+        graph_x_pos_pred = self.l_graph_x_pretrain(
+            torch.cat([
+                l_x_sca, repeat(complex_graph.l_graph_pool, 'b d -> b n d', n=l_x_sca.size(1))
+            ], dim=-1)
+        )
+        graph_x_neg_pred = self.l_graph_x_pretrain(
+            torch.cat([
+                shift_l_x_sca,
+                repeat(complex_graph.l_graph_pool, 'b d -> b n d', n=shift_l_x_sca.size(1))
+            ], dim=-1)
+        )
+        graph_edge_pos_pred = self.l_graph_edge_pretrain(
+            torch.cat([
+                l_edge_sca, repeat(complex_graph.l_graph_pool, 'b d -> b n d', n=l_edge_sca.size(1))
+            ], dim=-1)
+        )
+        graph_edge_neg_pred = self.l_graph_edge_pretrain(
+            torch.cat([
+                shift_l_edge_sca, repeat(complex_graph.l_graph_pool, 'b d -> b n d', n=shift_l_edge_sca.size(1))
+            ], dim=-1)
+        )
+
+        # for dismap
+        dismap_pred = self.dismap_predict(complex_graph.l_edge_sca).squeeze(dim=-1)
+
+        # for coor
+        complex_graph.l_x_vec = self.l_x_vec_embed(complex_graph.l_x_vec_init)
+        complex_graph.l_edge_vec = self.l_edge_vec_embed(complex_graph.l_edge_vec_init)
+        l_x_sca_vec = (complex_graph.l_x_sca, complex_graph.l_x_vec)
+        l_edge_sca_vec = (complex_graph.l_edge_sca, complex_graph.l_edge_vec)
+        l_x_sca_vec, l_edge_sca_vec = self.l_coor_encoder(
+            l_x_sca_vec, l_edge_sca_vec, complex_graph.l_x_mask, coor=complex_graph.l_coor_init)
+        l_x_sca_vec = (rearrange(l_x_sca_vec[0], 'b i d -> (b i) d')[complex_graph.l_x_coor_mask_bool],
+                       rearrange(l_x_sca_vec[1], 'b i d c -> (b i) d c')[complex_graph.l_x_coor_mask_bool])
+        noise_pred = self.noise_predict(l_x_sca_vec)[1].squeeze(-2) + complex_graph.l_coor_init_selected
+
+        return (l_x_pred, l_edge_pred, graph_x_pos_pred, graph_x_neg_pred, graph_edge_pos_pred, graph_edge_neg_pred,
+                dismap_pred, noise_pred)
 
 
 class ComplexDecoder(torch.nn.Module):
@@ -343,7 +495,8 @@ class FlexPose(torch.nn.Module):
             self.p_encoder.load_state_dict(p_param['model_state_dict'], strict=True)
             del p_param
         else:
-            print('Skip loading pre-trained protein encoder parameters')
+            pass
+            # print('Skip loading pre-trained protein encoder parameters')
 
         if 'pretrain_ligand_encoder' in args.__dict__.keys():
             if isinstance(args.pretrain_ligand_encoder, str) and os.path.isfile(args.pretrain_ligand_encoder):
@@ -354,7 +507,8 @@ class FlexPose(torch.nn.Module):
             self.l_feat_encoder.load_state_dict(l_param['model_state_dict'], strict=True)
             del l_param
         else:
-            print('Skip loading pre-trained ligand encoder parameters')
+            pass
+            # print('Skip loading pre-trained ligand encoder parameters')
 
     def pretrain(self, complex_graph):
         # pretrain

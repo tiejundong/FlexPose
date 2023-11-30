@@ -40,9 +40,9 @@ You can use the FlexPose as follows in `demo.py`:
 from FlexPose.utils.prediction import predict as predict_by_FlexPose
 
 predict_by_FlexPose(
-    protein='./FlexPose/example/4r6e/4r6e_protein.pdb',               # protein path, or a list of path
-    ligand='./FlexPose/example/4r6e/4r6e_ligand.mol2',                # ligand path (or SMILES), or a list of path (or SMILES)
-    ref_pocket_center='./FlexPose/example/4r6e/4r6e_ligand.mol2',     # ligand-like file for selecting pocket, e.g. predictions from Fpocket
+    protein='./FlexPose/example/4r6e/4r6e_protein.pdb',               # a protein path, or a list of paths
+    ligand='./FlexPose/example/4r6e/4r6e_ligand.mol2',                # a ligand path (or SMILES), or a list of paths (or SMILES)
+    ref_pocket_center='./FlexPose/example/4r6e/4r6e_ligand.mol2',     # a ligand-like file for selecting pocket, e.g. predictions from Fpocket
     # batch_csv='./FlexPose/example/example_input.csv',               # for batch prediction
 
     device='cuda:0',                                                  # device
@@ -50,7 +50,24 @@ predict_by_FlexPose(
     output_result_path='./output.csv',                                # record output
 )
 ```
-Besides, You can set `model_conf = True` and `ens = 10` to get predicted model confidence.
+
+|Arguments | Description |
+|----------|--------|
+| `protein` | input proteins (a list of paths) |
+| `ligand`  | input ligands (a list of paths) |
+| `ref_pocket_center` | ligand-like files for pocket selection (a list of paths) |
+| `batch_csv` | batch prediction |
+| `ens` | ensemble number |
+| `structure_output_path` | a folder for saving predicted structures |
+| `output_result_path` | a csv file for saving records |
+| `min` | energy minimizion |
+| `min_loop` | energy minimizion loops |
+| `min_constraint` | constraint energy minimizion constant (kcal/mol/Å^2) |
+| `batch_csv` | batch prediction |
+| `device` | device |
+| `batch_size` | batch size |
+| `prepare_data_with_multi_cpu` | prepare inputs with multiprocessing |
+
 
 
 ### Training <a name="training"></a>
