@@ -63,7 +63,6 @@ predict_by_FlexPose(
 | `min` | Energy minimizion                                        |
 | `min_loop` | Energy minimizion loops                                  |
 | `min_constraint` | Constraint energy minimizion constant (kcal/mol/Å^2)     |
-| `batch_csv` | Batch prediction                                         |
 | `device` | Device                                                   |
 | `batch_size` | Batch size                                               |
 | `prepare_data_with_multi_cpu` | Prepare inputs with multiprocessing                      |
