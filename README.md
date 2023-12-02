@@ -51,7 +51,7 @@ predict_by_FlexPose(
 )
 ```
 
-|Arguments | Description                                              |
+|Arguments | Descriptions                                             |
 |----------|----------------------------------------------------------|
 | `protein` | Input proteins (a list of paths)                         |
 | `ligand`  | Input ligands (a list of paths)                          |
