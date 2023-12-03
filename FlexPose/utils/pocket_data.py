@@ -410,7 +410,7 @@ class PocketDataset(torch.utils.data.Dataset):
     def select_by_bool(self, x, sample_index, mask_index_single, mask_v, select_type, additional_mask=None):
         # mask_index_single: [CA CB N C]
         # mask_index <- 1d: [mask_index_single, mask_index_single] or 2d: [mask_index_single, [True, ...](same shape with mask_index_single)]
-        # mask_index <- cat([mask_index, additional_mask]) # for 1d vec SC and connection info in 2d sca
+        # mask_index <- cat([mask_index, additional_mask])
         # 1d [i, j, ...], sample_index->i, mask_index->j
         # 2d [i, j, k, ...], sample_index->ij, mask_index->k
         assert select_type in ['1d', '2d']
