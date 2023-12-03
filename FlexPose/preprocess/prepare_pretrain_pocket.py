@@ -88,11 +88,11 @@ def save(tup_in):
 
     for STP_id in pocket_id_list:
         pocket_id = f'{pdb_id}_{STP_id}'
-        # try:
-        dic_data = prepare(df_protein, df_STP, STP_id)
-        np.savez_compressed(save_path + '/{}.npz'.format(pocket_id), **dic_data)
-        # except:
-        #     pass
+        try:
+            dic_data = prepare(df_protein, df_STP, STP_id)
+            np.savez_compressed(save_path + '/{}.npz'.format(pocket_id), **dic_data)
+        except:
+            pass
 
 
 def try_prepare(*args, **kwargs):
