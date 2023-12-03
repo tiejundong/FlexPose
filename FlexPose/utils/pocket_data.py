@@ -278,7 +278,7 @@ class PocketDataset(torch.utils.data.Dataset):
         allow_mask_pos = (p_x_sca_init.sum(dim=-1, keepdim=True) == 1).to(p_x_sca_init.dtype)
         p_x_sca_init = F.pad(p_x_sca_init, (0, 1), 'constant', 0)
 
-        # noise for CA
+        # CA noise
         p_x_mask_CAnoise_bool = self.gen_mask_index([allow_mask_pos], self.total_mask_rate * self.mask_rate_CAnoise)
         p_x_mask_CAnoise_label = p_coor_init[p_x_mask_CAnoise_bool]  # CA coor
         p_coor_init[p_x_mask_CAnoise_bool] = p_coor_init[p_x_mask_CAnoise_bool] + \
@@ -313,7 +313,7 @@ class PocketDataset(torch.utils.data.Dataset):
         p_x_sca_init[p_x_mask_AAtype_bool, -1] = 1
         allow_mask_pos = allow_mask_pos + (p_x_mask_AAtype_bool.unsqueeze(-1)).to(p_x_sca_init.dtype)
 
-        # mask MCcoor/vec
+        # mask MC
         p_x_mask_MCcoor_bool = self.gen_mask_index([allow_mask_pos], self.total_mask_rate * self.mask_rate_MCcoor)
         p_x_mask_MCcoor_label = torch.stack([MCSC_coor[p_x_mask_MCcoor_bool, 0] - p_coor_init[p_x_mask_MCcoor_bool],
                                              MCSC_coor[p_x_mask_MCcoor_bool, 1] - p_coor_init[p_x_mask_MCcoor_bool],
@@ -337,7 +337,7 @@ class PocketDataset(torch.utils.data.Dataset):
                                               additional_mask=None)
         allow_mask_pos = allow_mask_pos + (p_x_mask_MCcoor_bool.unsqueeze(-1)).to(p_x_sca_init.dtype)
 
-        # mask SCcoor/vec
+        # mask SC
         p_x_mask_SCcoor_bool = self.gen_mask_index([allow_mask_pos], self.total_mask_rate * self.mask_rate_SCcoor)
         p_x_mask_SCcoor_label = torch.cat([SC_fromtor_vec[p_x_mask_SCcoor_bool], SC_fromCA_vec[p_x_mask_SCcoor_bool]],
                                           dim=-2)
