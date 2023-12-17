@@ -595,12 +595,13 @@ class FlexPose(torch.nn.Module):
         complex_graph.edge_sca, complex_graph.edge_vec = complex_graph.edge_sca_vec
         return complex_graph
 
-    def energy_min(self, complex_graph, loop=None, constraint=None, show_state=False):
+    def energy_min(self, complex_graph, loop=None, constraint=None, show_state=False, min_type='GD'):
         if self.use_min:
             coor_flat = rearrange(complex_graph.coor, 'b n c -> (b n) c')
             l_coor_pred = coor_flat[complex_graph.ligand_node_loc_in_complex_flat]
             l_coor_min = self.coor_min_object(l_coor_pred * self.coor_scale, complex_graph,
-                                              loop=loop, constraint=constraint, show_state=show_state)
+                                              loop=loop, constraint=constraint,
+                                              show_state=show_state, min_type=min_type)
             coor_flat[complex_graph.ligand_node_loc_in_complex_flat] = l_coor_min / self.coor_scale
             complex_graph.coor = rearrange(coor_flat, '(b n) c -> b n c', b=complex_graph.coor.size(0))
         return complex_graph

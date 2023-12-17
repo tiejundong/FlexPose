@@ -678,6 +678,7 @@ def predict(
         num_workers=4,  # only work with ens=1
         prepare_data_with_multi_cpu=True,  # prepare inputs with multi-processing
         min=True,  # torch build-in minimization
+        min_type='GD',  # ['GD', 'LBFGS']
         rdkit_min=False,  # rdkit minimization
         env_min=False,
         cache_path='./cache',
@@ -726,7 +727,7 @@ def predict(
                 if min:
                     ens_pred = repeat(ens_pred, 'n c -> (b n) c', b=ens)
                     ens_pred = model.coor_min_object(ens_pred, g,
-                                                     loop=min_loop, constraint=min_constraint)
+                                                     loop=min_loop, constraint=min_constraint, min_type=min_type)
 
                 dic_result['coor_pred'].append(ens_pred)
                 dic_result['SC_pred'].append(tup_pred[3][0])
@@ -746,7 +747,7 @@ def predict(
             else:
                 if min:
                     g.coor = tup_pred[0][:, :, -1, :]
-                    g = model.energy_min(g, loop=min_loop, constraint=min_constraint)
+                    g = model.energy_min(g, loop=min_loop, constraint=min_constraint, min_type=min_type)
                     last_frame = g.coor
                 else:
                     last_frame = tup_pred[0][:, :, -1, :]
