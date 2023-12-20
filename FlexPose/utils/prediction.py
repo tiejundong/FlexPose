@@ -676,7 +676,7 @@ def predict(
         seed=42,
         batch_size=12,  # only work with ens=1
         num_workers=4,  # only work with ens=1
-        prepare_data_with_multi_cpu=True,  # prepare inputs with multi-processing
+        prepare_data_with_multi_cpu=False,  # prepare inputs with multi-processing
         min=True,  # torch build-in minimization
         min_type='GD',  # ['GD', 'LBFGS']
         rdkit_min=False,  # rdkit minimization
