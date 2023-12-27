@@ -51,21 +51,22 @@ predict_by_FlexPose(
 )
 ```
 
-|Arguments | Descriptions                                             |
-|----------|----------------------------------------------------------|
-| `protein` | Input proteins (a list of paths)                         |
-| `ligand`  | Input ligands (a list of paths)                          |
+|Arguments | Descriptions |
+|----------|--------|
+| `protein` | Input proteins (a list of paths) |
+| `ligand`  | Input ligands (a list of paths) |
 | `ref_pocket_center` | Ligand-like files for pocket selection (a list of paths) |
-| `batch_csv` | Batch prediction                                         |
-| `ens` | Ensemble number                                          |
-| `structure_output_path` | A folder for saving predicted structures                 |
-| `output_result_path` | A csv file for saving records                            |
-| `min` | Energy minimizion                                        |
-| `min_loop` | Energy minimizion loops                                  |
-| `min_constraint` | Constraint energy minimizion constant (kcal/mol/Å^2)     |
-| `device` | Device                                                   |
-| `batch_size` | Batch size                                               |
-| `prepare_data_with_multi_cpu` | Prepare inputs with multiprocessing                      |
+| `batch_csv` | Batch prediction |
+| `ens` | Ensemble number |
+| `structure_output_path` | A folder for saving predicted structures |
+| `output_result_path` | A csv file for saving records |
+| `min` | Energy minimizion |
+| `min_loop` | Energy minimizion loops |
+| `min_constraint` | Constraint energy minimizion constant (kcal/mol/Å^2) |
+| `model_conf` | Output model confidence |
+| `device` | Device |
+| `batch_size` | Batch size |
+| `prepare_data_with_multi_cpu` | Prepare inputs with multiprocessing |
 
 
 
